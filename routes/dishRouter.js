@@ -6,11 +6,11 @@ const Dishes = require('../models/dishes');
 
 const dishRouter = express.Router();
 
-dishRouter.use(bodyParser.json());
+dishRouter.use(bodyParser.json()); // to make use of the body message in the res and req
 
 dishRouter.route('/')
 .get((req,res,next)=>{
-  console.log('cicinja');
+
   Dishes.find({})
   .then((dishes) => {
     res.statusCode = 200;
@@ -43,11 +43,7 @@ dishRouter.route('/')
   .catch((err) => next(err));
 });
 
-dishRouter.route('/:dishId').all((req,res,next)=>{
-  res.statusCode = 200;
-  res.setHeader('Content-Type','text/plain');
-  next();
-})
+dishRouter.route('/:dishId')
 .get((req,res,next)=>{
   Dishes.findById(req.params.dishId)
   .then((dish) => {
@@ -64,7 +60,7 @@ dishRouter.route('/:dishId').all((req,res,next)=>{
 .put((req,res,next)=>{
   Dishes.findByIdAndUpdate(req.params.dishId, {
     $set: req.body
-  }, { new: true})
+  }, { new: true}) // Returns the result
   .then((dish) => {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
