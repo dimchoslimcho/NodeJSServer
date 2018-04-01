@@ -7,6 +7,7 @@ var session = require('express-session');
 var FileStore = require('session-file-store')(session);
 var passport = require('passport');
 var authenticate = require('./authenticate');
+var config = require('./config');
 
 
 
@@ -21,7 +22,7 @@ mongoose.Promise = require('bluebird');
 
 const Dishes = require('./models/dishes');
 
-const url = 'mongodb://localhost:27017/conFusion';
+const url = config.mongoUrl;
 
 const connect = mongoose.connect(url);
 
@@ -40,33 +41,20 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false })); //this
 //app.use(cookieParser('12345-67890-09876-54321')); //this
-app.use(session({
+/*app.use(session({ //using this code we are saving the session
   name: 'session_id',
   secret: '12345-67890-09876-54321',
   saveUninitialized: false,
   resave: false,
   store: new FileStore()
-}));
-
+}));*/
 app.use(passport.initialize());
-app.use(passport.session());
+
 
 app.use('/', index); // we are first singing up and after that the auth process is completed not vice versa
 app.use('/users', users); //this two must be here
 
-function auth(req, res, next) {
 
-
-  if(!req.user){
-    var err = new Error('You are not authenticated!');
-    err.status = 403;
-    return next(err);
-  }
-  else {
-    next();
-  }
-}
-app.use(auth);
 
 app.use(express.static(path.join(__dirname, 'public'))); // express is using this to serve static data from our public folder
 // This order has a big importance because every funciotn call is different middleware
