@@ -5,6 +5,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
 var FileStore = require('session-file-store')(session);
+var passport = require('passport');
+var authenticate = require('./authenticate');
+
 
 
 var index = require('./routes/index');
@@ -45,26 +48,22 @@ app.use(session({
   store: new FileStore()
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use('/', index); // we are first singing up and after that the auth process is completed not vice versa
-app.use('/users', users); //they must be here
+app.use('/users', users); //this two must be here
 
 function auth(req, res, next) {
-  console.log(req.session);
 
-  if(!req.session.user){
+
+  if(!req.user){
     var err = new Error('You are not authenticated!');
     err.status = 403;
     return next(err);
   }
   else {
-    if(req.session.user === 'authenticated'){
-      next();
-    }
-    else {
-      var err = new Error('You are not authenticated!');
-      err.status = 403;
-      return next(err);
-    }
+    next();
   }
 }
 app.use(auth);
