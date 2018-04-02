@@ -24,11 +24,22 @@ router.post('/signup', (req, res, next) => {
       res.json({err: err});
     }
     else { // we are authenticating the same user which was registered
-      passport.authenticate('local')(req, res, () => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json({success: true, status: 'Registration Successful'});
+      if(req.body.firstname) user.firstname = req.body.firstname; // we want to make sure that the user is successfully registered
+      if(req.body.lastname) user.lastname = req.body.lastname; // Thats why we do this parameter assignment after the authentication
+      user.save((err, user) => {
+        if(err) {
+          res.statusCode = 500;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({err: err});
+          return;
+        }
+        passport.authenticate('local')(req, res, () => {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: true, status: 'Registration Successful'});
+        });
       });
+
     }
   });
 });
