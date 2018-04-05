@@ -39,3 +39,13 @@ exports.jwtPassport = passport.use(new JwtStrategy(opts,
 }));
 
 exports.verifyUser = passport.authenticate('jwt', {session: false});
+exports.verifyAdmin = function(req, res, next) {
+  if (req.user.admin){  //req.decoded kje postoi samo ako prethodno se vikne verify user t.e. decoded e del od tokenot shto se dobiva kako respons od prethodnata funkcija
+    next();             //valjda user e tuka mesto req.decoded._doc
+  }
+  else{
+    var err = new Error('You are not authorized to perform this opreation!');
+    err.status = 403;
+    return next(err);
+  }
+}
