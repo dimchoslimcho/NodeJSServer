@@ -69,7 +69,7 @@ router.get('/logout', cors.corsWithOptions, (req, res) => {
   else{
     var err = new Error('You are not logged in!');
     err.status = 403; //Frobiden operation
-    next(err);
+  return  next(err);
   }
 });
 
