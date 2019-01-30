@@ -99,7 +99,6 @@ favoriteRouter.route('/:dishId')
   .then((favorites) => {
 
     if(favorites != null){
-      console.log('cicinja');
       if(favorites.dishes.indexOf(req.params.dishId) != -1){
         var err = new Error('This dish already exsist in the favorites list!');
         err.status = 409;
