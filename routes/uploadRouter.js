@@ -37,7 +37,6 @@ uploadRouter.route('/')
   res.statusCode = 200;
   res.setHeader('Content-Type', 'application/json');
   res.json(req.file);
-  console.log('cicki');
 })
 .put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req,res,next)=>{
   res.statusCode = 403;
